@@ -14,11 +14,11 @@ export default async function contact(
 
   const transportOptions: SMTPTransport.Options = {
     host: "smtp.gmail.com",
-    port: 587,
+    port: 465,
     secure: true,
     auth: {
       user: USER,
-      password: PASSWORD,
+      pass: PASSWORD,
     } as SMTPConnection.AuthenticationType,
   };
 

@@ -13,7 +13,7 @@ const Contact: NextPage = () => {
     e.target.reset();
   };
 
-  const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
     const name = e.target.elements.namedItem("name") as HTMLInputElement;
@@ -26,7 +26,7 @@ const Contact: NextPage = () => {
       message: message.value,
     };
 
-    fetch("/api/contact/contact", {
+    await fetch("/api/contact/contact", {
       method: "POST",
       headers: {
         Accept: "application/json, text/plain, */*",

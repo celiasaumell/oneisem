@@ -22,7 +22,7 @@ export default async function contact(
     html: `<div>${req.body.message}</div><p>Sent from: ${req.body.email}</p>`,
   };
 
-  sgMail
+  await sgMail
     .send(mailData)
     .then(() => {
       console.log("email sent");

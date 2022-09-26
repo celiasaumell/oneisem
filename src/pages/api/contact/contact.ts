@@ -1,45 +1,33 @@
-import * as dotenv from "dotenv";
+import sgMail from "@sendgrid/mail";
+import { MailDataRequired } from "@sendgrid/mail/src/mail";
+import dotenv from "dotenv";
 import { NextApiRequest, NextApiResponse } from "next";
-import nodemailer from "nodemailer";
-import SMTPConnection from "nodemailer/lib/smtp-connection";
-import SMTPTransport from "nodemailer/lib/smtp-transport";
-
 export default async function contact(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   dotenv.config();
+
+  const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY as string;
   const USER = process.env.USER;
   const PASSWORD = process.env.PASSWORD;
 
-  const transportOptions: SMTPTransport.Options = {
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-      user: USER,
-      pass: PASSWORD,
-    } as SMTPConnection.AuthenticationType,
-  };
+  sgMail.setApiKey(SENDGRID_API_KEY);
 
-  const transporter = nodemailer.createTransport(transportOptions);
-
-  const mailData = {
-    from: USER,
+  const mailData: MailDataRequired = {
+    from: USER as string,
     to: USER,
     subject: `Message From ${req.body.name}`,
     text: req.body.message,
     html: `<div>${req.body.message}</div><p>Sent from: ${req.body.email}</p>`,
   };
 
-  transporter.sendMail(mailData, function (err, info) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(info);
-    }
-  });
-
+  sgMail
+    .send(mailData)
+    .then(() => {
+      console.log("email sent");
+    })
+    .catch((err) => console.error(err));
   res.status(200);
   res.send("Success");
 }
